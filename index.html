@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>شیک اسلایدر</title>
+  <style>
+    :root {
+      --accent: #4f46e5;
+      --btn-radius: 0.5rem;
+    }
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      transition: background 0.5s, color 0.5s;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .light-mode {
+      background: linear-gradient(135deg, #ffffff, #3a86ff);
+      color: #003366;
+    }
+    .dark-mode {
+      background: linear-gradient(135deg, #8b0000, #000000);
+      color: #ffcccc;
+    }
+    .container {
+      text-align: center;
+      width: 320px;
+    }
+    .clock {
+      font-weight: bold;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .slider {
+      position: relative;
+      width: 300px;
+      height: 200px;
+      overflow: hidden;
+      margin: 0 auto 1rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    .slide {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: var(--accent);
+      border-radius: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: white;
+      opacity: 0;
+      transform: scale(0.95);
+      transition: opacity 1s ease, transform 1s ease;
+    }
+    .slide.active {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .controls {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: var(--btn-radius);
+      cursor: pointer;
+      background-color: var(--accent);
+      color: white;
+      font-weight: 600;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #3724a7;
+    }
+  </style>
+</head>
+<body class="light-mode">
+  <div class="container">
+    <div class="clock" id="clock">--:--:--</div>
+    <div class="slider" id="slider">
+      <div class="slide active">Item 1</div>
+      <div class="slide">Item 2</div>
+      <div class="slide">Item 3</div>
+      <div class="slide">Item 4</div>
+    </div>
+    <div class="controls">
+      <button id="modeBtn" onclick="toggleMode()">🌗 Mode</button>
+      <button id="langBtn" onclick="toggleLang()">🌐 Language</button>
+    </div>
+  </div>
+
+  <script>
+    let isDark = false;
+    let isFa = false;
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const modeBtn = document.getElementById('modeBtn');
+    const langBtn = document.getElementById('langBtn');
+
+    function toggleMode() {
+      isDark = !isDark;
+      document.body.className = isDark ? 'dark-mode' : 'light-mode';
+    }
+
+    function toggleLang() {
+      isFa = !isFa;
+      document.documentElement.lang = isFa ? 'fa' : 'en';
+      document.documentElement.dir = isFa ? 'rtl' : 'ltr';
+
+      slides.forEach((el, i) => {
+        el.textContent = isFa ? `آیتم ${i + 1}` : `Item ${i + 1}`;
+      });
+
+      modeBtn.textContent = isFa ? '🌗 حالت' : '🌗 Mode';
+      langBtn.textContent = isFa ? '🌐 زبان' : '🌐 Language';
+    }
+
+    function updateClock() {
+      const now = new Date();
+      const locale = isFa ? 'fa-IR' : 'en-US';
+      const time = now.toLocaleTimeString(locale);
+      document.getElementById('clock').textContent = time;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    function showSlide(index) {
+      slides.forEach((slide, i) => {
+        slide.classList.remove('active');
+        if (i === index) slide.classList.add('active');
+      });
+    }
+
+    setInterval(() => {
+      currentSlide = (currentSlide + 1) % slides.length;
+      showSlide(currentSlide);
+    }, 3000);
+  </script>
+</body>
+</html>
